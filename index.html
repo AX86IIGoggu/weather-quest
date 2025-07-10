@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather Quest</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #4a90e2, #50e3c2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+    }
+
+    header {
+      background: rgba(0,0,0,0.25);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      user-select: none;
+    }
+
+    header button {
+      background: #ff6f61;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
+    }
+
+    header button:hover {
+      background: #ff4a3d;
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #playBtn {
+      font-size: 3rem;
+      padding: 25px 60px;
+      border-radius: 40px;
+      margin-bottom: 25px;
+      font-weight: 800;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+      background: #ff6f61;
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #playBtn:hover {
+      background: #ff4a3d;
+    }
+
+    #homeScreen, #questForm, #questMessage {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 30px 40px;
+      border-radius: 15px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+
+    #questForm label {
+      display: block;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    #questForm input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      margin-top: 5px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    #questForm input:focus {
+      outline: none;
+      box-shadow: 0 0 8px 2px #ff6f61;
+    }
+
+    button:not(#playBtn) {
+      margin-top: 20px;
+      background: #ff6f61;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
+    }
+
+    button:not(#playBtn):hover {
+      background: #ff4a3d;
+    }
+
+    #backHomeBtn {
+      margin-top: 25px;
+      background: #4a90e2;
+    }
+
+    #backHomeBtn:hover {
+      background: #357ABD;
+    }
+
+    #questForm, #questMessage, #backHomeBtn {
+      display: none;
+    }
+
+    #questMessage {
+      font-size: 1.3rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 480px) {
+      header {
+        font-size: 1.2rem;
+        padding: 12px 15px;
+      }
+
+      #homeScreen, #questForm, #questMessage {
+        padding: 25px 20px;
+        max-width: 90vw;
+      }
+
+      button:not(#playBtn) {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>🌤️ Weather Quest</div>
+  </header>
+
+  <main>
+    <button id="playBtn">Play</button>
+
+    <div id="homeScreen">
+      <h2>Welcome Adventurer!</h2>
+      <p>Embark on your quest based on today’s weather.</p>
+    </div>
+
+    <div id="questForm">
+      <label>
+        Your Name:
+        <input type="text" id="nameInput" placeholder="Enter your name" />
+      </label>
+      <label>
+        Your City:
+        <input type="text" id="cityInput" placeholder="Enter your city" />
+      </label>
+      <button id="startBtn">Start Quest</button>
+    </div>
+
+    <div>
+      <div id="questMessage"></div>
+      <button id="backHomeBtn">Back Home</button>
+    </div>
+  </main>
+
+  <script>
+
+        const quests = {
+      clear: [
+        "Take a 30-minute walk outside.",
+        "Go for a bike ride.",
+        "Have a picnic in the park.",
+        "Try some outdoor photography.",
+        "Do some gardening or plant a flower.",
+        "Practice yoga or meditation outside.",
+        "Go watch the sunset.",
+        "Play frisbee or catch with friends.",
+        "Visit a nearby nature trail.",
+        "Read a book outside in the sun.",
+        "Fly a kite at the park.",
+        "Go birdwatching and try to identify 5 species.",
+        "Take your sketchbook and draw nature scenes.",
+        "Go for a jog around your neighborhood.",
+        "Explore a local botanical garden.",
+        "Have an outdoor picnic with your favorite snacks.",
+        "Try stargazing once the sun sets.",
+        "Practice photography focusing on natural light.",
+        "Play outdoor volleyball or basketball.",
+        "Have a water balloon fight.",
+        "Try an outdoor workout or circuit training.",
+        "Lay on the grass and watch the clouds.",
+        "Collect interesting leaves or rocks on a walk.",
+        "Go for a swim at a nearby pool or lake.",
+        "Try geocaching in your area.",
+        "Have a barbecue or grill outdoors.",
+        "Go rollerblading or skateboarding.",
+        "Take a scenic drive and stop at a lookout point.",
+        "Visit a local farmer's market.",
+        "Try outdoor painting or watercolor.",
+        "Play a game of soccer or football with friends.",
+        "Try outdoor meditation or deep breathing.",
+        "Take your pet for an extended walk or hike.",
+        "Try slacklining in the park.",
+        "Go kayaking or paddleboarding if possible.",
+        "Pick wildflowers and press them.",
+        "Do some outdoor stretching or tai chi.",
+        "Try flying a drone and capture aerial shots.",
+        "Go fishing at a nearby river or lake.",
+        "Try rock climbing at an outdoor spot.",
+        "Make homemade ice pops and enjoy them outside.",
+        "Have a nature scavenger hunt with friends.",
+        "Write a poem inspired by your surroundings.",
+        "Build a small outdoor fort or tent.",
+        "Try a new sport like badminton or tennis.",
+        "Practice balance exercises on a park bench.",
+        "Try a bike trail you've never been on.",
+        "Watch a sunrise and journal your thoughts.",
+        "Have an outdoor tea party.",
+        "Do some gardening by planting herbs or veggies.",
+        "Practice bird calls and listen for responses.",
+        "Set up an outdoor movie night with a projector.",
+        "Try a new running route and track your time.",
+        "Make a time-lapse video of a sunset.",
+        "Collect pinecones and decorate them creatively.",
+        "Try outdoor yoga with a guided video.",
+        "Set up a hammock and relax with music.",
+        "Explore a local park you’ve never visited.",
+        "Go on a photo walk focusing on shadows and light.",
+        "Try outdoor journaling or sketching.",
+        "Build a small rock cairn or sculpture.",
+        "Host a sidewalk chalk art competition.",
+        "Try outdoor painting with watercolors.",
+        "Plan a garden or flower bed layout.",
+        "Do a nature-inspired craft project.",
+        "Create a nature journal with sketches and notes.",
+        "Try meditation focusing on natural sounds.",
+        "Have an outdoor picnic with friends or family.",
+        "Try biking to a new café or spot.",
+        "Set up an outdoor obstacle course.",
+        "Go for a sunrise hike.",
+        "Have a picnic while listening to a podcast.",
+        "Try star counting once it’s dark.",
+        "Learn constellations during stargazing.",
+        "Play outdoor hide and seek.",
+        "Try an outdoor puzzle or board game.",
+        "Do some gardening weeding or planting.",
+        "Try an outdoor tai chi or qigong session.",
+        "Take a scenic walk near water.",
+        "Try skipping stones on a pond.",
+        "Visit a local outdoor art installation.",
+        "Try outdoor journaling with nature poems.",
+        "Do some birdwatching with binoculars.",
+        "Have a picnic while sketching nature.",
+        "Try making leaf rubbings.",
+        "Take photos of interesting patterns in nature.",
+        "Try flying a kite on a breezy day.",
+        "Explore nearby trails or nature reserves.",
+        "Do a 20-minute outdoor stretching session.",
+        "Build a small sandcastle if near a beach.",
+        "Try outdoor mindfulness meditation.",
+        "Have a game of catch or frisbee.",
+        "Try hiking a new trail.",
+        "Make an outdoor music playlist and listen while walking.",
+        "Have an outdoor painting session.",
+        "Try planting a small tree or shrub.",
+        "Go birdwatching and make a list of what you see.",
+        "Do a picnic and read poetry aloud.",
+        "Try outdoor photography focusing on close-ups.",
+        "Create an outdoor photo collage.",
+        "Try a new outdoor sport like disc golf.",
+        "Practice outdoor breathing exercises.",
+        "Go for a run or walk listening to your favorite music.",
+        "Do some nature-inspired writing or poetry."
+      ],
+
+      rain: [
+        "Draw or write a story indoors.",
+        "Watch a movie you've never seen before.",
+        "Try cooking a new recipe.",
+        "Do some indoor stretching or exercise.",
+        "Listen to your favorite music and relax.",
+        "Build a blanket fort.",
+        "Play board games or puzzles.",
+        "Try learning a new card game.",
+        "Organize your room or desk.",
+        "Write a letter to a friend.",
+        "Make a scrapbook or photo album.",
+        "Try baking cookies or a cake.",
+        "Have an indoor dance party.",
+        "Do some indoor gardening with houseplants.",
+        "Practice a musical instrument.",
+        "Try a new craft like knitting or origami.",
+        "Read a new book or start a book series.",
+        "Have a video call with a friend or family member.",
+        "Write a poem or song lyrics.",
+        "Try indoor yoga or pilates.",
+        "Paint or color in an adult coloring book.",
+        "Do a puzzle or brain teaser.",
+        "Try learning some magic tricks.",
+        "Make homemade candles or soap.",
+        "Try origami or paper crafts.",
+        "Create a vision board or mood board.",
+        "Write in a journal or diary.",
+        "Try an indoor scavenger hunt.",
+        "Make a time capsule.",
+        "Try meditation or mindfulness exercises.",
+        "Listen to a podcast or audiobook.",
+        "Do a home science experiment.",
+        "Make homemade slime or play dough.",
+        "Try building a LEGO set or model kit.",
+        "Write a short story.",
+        "Try indoor photography with creative lighting.",
+        "Make a playlist of your favorite songs.",
+        "Organize your digital photos or files.",
+        "Try creating a comic strip or storyboard.",
+        "Do some origami animals.",
+        "Try indoor rock balancing or stacking.",
+        "Make a DIY project with recycled materials.",
+        "Try some calligraphy or fancy handwriting.",
+        "Build a model airplane or car.",
+        "Watch a documentary on a new topic.",
+        "Try indoor gardening with hydroponics.",
+        "Make a homemade pizza or snack.",
+        "Write thank-you notes to people you appreciate.",
+        "Try sewing or making simple clothes.",
+        "Create a new recipe and cook it.",
+        "Practice mindfulness breathing.",
+        "Try an indoor obstacle course.",
+        "Make a list of goals and plans.",
+        "Try indoor juggling or circus skills.",
+        "Create a photo collage or digital art.",
+        "Do some indoor stretching or foam rolling.",
+        "Make your own board game or card game.",
+        "Write a letter to your future self.",
+        "Try indoor meditation with guided videos.",
+        "Make paper snowflakes or decorations.",
+        "Try indoor gardening with herbs.",
+        "Build a puzzle or jigsaw.",
+        "Try a new language lesson online.",
+        "Make your own jewelry or accessories.",
+        "Write a blog post or journal entry.",
+        "Try painting rocks or small crafts.",
+        "Do indoor photography with shadows.",
+        "Try learning about astronomy indoors.",
+        "Make a diorama or small model scene.",
+        "Try indoor stretching or Tai Chi.",
+        "Create your own storybook or comic.",
+        "Do a virtual museum tour online.",
+        "Try making a movie or stop-motion video.",
+        "Write a script or play.",
+        "Do a yoga challenge or routine.",
+        "Try making your own greeting cards.",
+        "Practice origami flowers or animals.",
+        "Try indoor meditation with music.",
+        "Make a list of favorite memories.",
+        "Try learning to draw or paint.",
+        "Create a scrapbook with magazine cutouts.",
+        "Try a new indoor sport like table tennis.",
+        "Write a gratitude list.",
+        "Make a small indoor garden setup.",
+        "Try knitting or crochet.",
+        "Try indoor photography with reflections.",
+        "Write a fantasy story or sci-fi.",
+        "Try indoor mindfulness walks around the house.",
+        "Make your own puzzles or games.",
+        "Try an online fitness or dance class."
+      ],
+
+      cloud: [
+        "Solve a fun indoor puzzle or game.",
+        "Read a book you've been meaning to start.",
+        "Try a new craft project.",
+        "Practice a musical instrument.",
+        "Plan your goals for the week.",
+        "Make a homemade snack or treat.",
+        "Try journaling your thoughts.",
+        "Watch an educational documentary.",
+        "Do a short home workout.",
+        "Experiment with drawing or coloring.",
+        "Try origami or paper crafts.",
+        "Write a short story or poem.",
+        "Organize your books or DVDs.",
+        "Make a vision board.",
+        "Try a new recipe.",
+        "Learn a few phrases in a new language.",
+        "Create a playlist of relaxing music.",
+        "Try meditation or mindfulness exercises.",
+        "Make a scrapbook or photo album.",
+        "Write letters or emails to friends.",
+        "Practice calligraphy or handwriting.",
+        "Try simple home science experiments.",
+        "Do indoor yoga or stretching.",
+        "Create a comic strip or storyboard.",
+        "Build a LEGO or model kit.",
+        "Try indoor gardening with houseplants.",
+        "Paint or color in a coloring book.",
+        "Do a puzzle or brain teaser.",
+        "Learn magic tricks or card tricks.",
+        "Make homemade gifts or crafts.",
+        "Write a blog post or journal entry.",
+        "Try cooking or baking a new dish.",
+        "Do an indoor scavenger hunt.",
+        "Listen to a podcast or audiobook.",
+        "Create a photo collage or digital art.",
+        "Try making jewelry or accessories.",
+        "Practice indoor photography with shadows.",
+        "Do indoor meditation or breathing exercises.",
+        "Write a gratitude list.",
+        "Try a new indoor workout routine.",
+        "Make paper crafts or decorations.",
+        "Organize your room or workspace.",
+        "Try indoor painting or drawing.",
+        "Make homemade candles or soap.",
+        "Write a script or plan a short play.",
+        "Do indoor stretching or Tai Chi.",
+        "Try online fitness or dance classes.",
+        "Build a model airplane or car.",
+        "Write poetry inspired by your feelings.",
+        "Try an indoor obstacle course.",
+        "Practice juggling or circus skills.",
+        "Do indoor mindfulness walks.",
+        "Make a list of goals and dreams.",
+        "Try learning a new hobby online.",
+        "Write thank-you notes.",
+        "Make a time capsule.",
+        "Try indoor gardening with herbs.",
+        "Create a new recipe.",
+        "Write a fantasy or sci-fi story.",
+        "Try indoor photography with reflections.",
+        "Do a virtual museum or zoo tour.",
+        "Make a diorama or model scene.",
+        "Practice indoor breathing exercises.",
+        "Try a new indoor sport like table tennis.",
+        "Write a letter to your future self.",
+        "Make paper snowflakes or decorations.",
+        "Try painting rocks or small crafts.",
+        "Practice origami flowers or animals.",
+        "Create an indoor music playlist.",
+        "Try learning to draw or paint.",
+        "Build a puzzle or jigsaw.",
+        "Write a gratitude journal.",
+        "Try indoor meditation with music.",
+        "Make your own greeting cards.",
+        "Try knitting or crochet.",
+        "Create a scrapbook with magazine cutouts.",
+        "Try a new language lesson online.",
+        "Write a blog post or story.",
+        "Do some indoor stretching or foam rolling.",
+        "Try indoor photography with creative lighting.",
+        "Make your own board or card game.",
+        "Try indoor mindfulness meditation.",
+        "Make a list of favorite memories.",
+        "Write a short story or poem.",
+        "Try learning about astronomy indoors.",
+        "Create your own storybook or comic."
+      ],
+
+      snow: [
+        "Build a snowman or snow fort.",
+        "Enjoy some hot cocoa while reading.",
+        "Make snow angels outside.",
+        "Try sledding or snowball fights.",
+        "Bake cookies or a warm dessert.",
+        "Watch a cozy movie with a blanket.",
+        "Do indoor stretching or yoga.",
+        "Write a winter-themed poem or story.",
+        "Create paper snowflakes for decoration.",
+        "Plan a future winter adventure.",
+        "Have a snowball fight with friends.",
+        "Try snowshoeing if possible.",
+        "Make a warm soup or stew.",
+        "Try indoor crafts with a winter theme.",
+        "Read a classic winter story.",
+        "Build a bird feeder and watch birds.",
+        "Do a puzzle by the fireplace or heater.",
+        "Write holiday or winter cards.",
+        "Practice indoor yoga or meditation.",
+        "Try winter photography outside.",
+        "Make a snow-themed playlist.",
+        "Have a game night indoors.",
+        "Make your own holiday decorations.",
+        "Try baking a holiday cake or bread.",
+        "Do a virtual winter travel tour.",
+        "Create a winter scrapbook or journal.",
+        "Practice calligraphy or fancy handwriting.",
+        "Make a winter vision board.",
+        "Try indoor gardening with winter plants.",
+        "Write thank-you notes to friends.",
+        "Try indoor stretching or tai chi.",
+        "Make homemade candles or soaps with winter scents.",
+        "Try indoor photography with cozy lighting.",
+        "Write a letter to a friend.",
+        "Do an indoor winter craft project.",
+        "Try knitting or crochet warm items.",
+        "Make a warm drink like spiced cider.",
+        "Create a winter-themed comic or story.",
+        "Practice mindfulness with winter sounds.",
+        "Make paper crafts or decorations.",
+        "Watch a winter sports event or documentary.",
+        "Write a gratitude list for winter.",
+        "Try baking bread or rolls.",
+        "Make homemade holiday gifts.",
+        "Do indoor meditation with calming music.",
+        "Try learning winter-themed songs on an instrument.",
+        "Write a winter travel bucket list.",
+        "Try indoor obstacle courses.",
+        "Make a list of favorite winter activities.",
+        "Create a winter photo collage.",
+        "Try indoor breathing exercises.",
+        "Build a gingerbread house.",
+        "Write a winter-themed play or script.",
+        "Try a new winter recipe.",
+        "Practice indoor stretching.",
+        "Make snow-inspired artwork.",
+        "Have a cozy reading day.",
+        "Try indoor yoga with warm-up exercises.",
+        "Make homemade hot chocolate.",
+        "Write winter-themed poetry.",
+        "Create paper lanterns or lights.",
+        "Try indoor journaling with winter prompts.",
+        "Make a winter storybook.",
+        "Do indoor crafts with recycled materials.",
+        "Try making winter scented candles.",
+        "Create a winter garden plan.",
+        "Try indoor photography of cozy scenes.",
+        "Write holiday or winter letters.",
+        "Make a warm soup or chili.",
+        "Try knitting hats or scarves.",
+        "Do a puzzle or board game.",
+        "Write a gratitude journal for winter.",
+        "Try indoor meditation with nature sounds.",
+        "Make a list of winter goals.",
+        "Try indoor fitness or dance classes.",
+        "Write a winter short story.",
+        "Make snow-themed decorations.",
+        "Try indoor gardening with winter herbs.",
+        "Create a winter-themed vision board.",
+        "Practice winter mindfulness.",
+        "Try baking holiday treats.",
+        "Make a list of winter movies to watch.",
+        "Write winter-themed songs or poems.",
+        "Try indoor crafts with kids.",
+        "Make a cozy blanket fort.",
+        "Try indoor breathing exercises.",
+        "Write a letter to your future self."
+      ],
+
+      other: [
+        "Try something new you love.",
+        "Explore a new hobby.",
+        "Write about your favorite memories.",
+        "Take time for self-care.",
+        "Learn a new skill online.",
+        "Organize your space.",
+        "Try a new recipe.",
+        "Listen to new music genres.",
+        "Watch a documentary.",
+        "Do some creative writing.",
+        "Try meditation or mindfulness.",
+        "Make a vision board.",
+        "Plan your next adventure.",
+        "Try indoor exercises.",
+        "Create art or crafts.",
+        "Write a letter to someone special.",
+        "Try photography indoors.",
+        "Learn about a new topic.",
+        "Make a playlist of favorite songs.",
+        "Practice yoga or stretching.",
+        "Try a puzzle or brain teaser.",
+        "Organize your digital files.",
+        "Try journaling your thoughts.",
+        "Cook a meal from a different culture.",
+        "Listen to an audiobook.",
+        "Try making handmade gifts.",
+        "Practice a musical instrument.",
+        "Write poetry or song lyrics.",
+        "Try indoor gardening.",
+        "Make homemade snacks.",
+        "Create a scrapbook.",
+        "Try a new language lesson.",
+        "Do some indoor dancing.",
+        "Practice calligraphy.",
+        "Try origami or paper crafts.",
+        "Write a blog post.",
+        "Try an online class.",
+        "Make a gratitude list.",
+        "Try creative photography.",
+        "Do indoor mindfulness walks.",
+        "Try baking or cooking.",
+        "Make a list of goals.",
+        "Try a new sport indoors.",
+        "Write a short story.",
+        "Try indoor obstacle courses.",
+        "Do breathing exercises.",
+        "Make a time capsule.",
+        "Try new relaxation techniques.",
+        "Write a letter to your future self.",
+        "Make homemade decorations.",
+        "Try painting or drawing.",
+        "Do a virtual museum tour.",
+        "Practice indoor fitness routines.",
+        "Make a list of favorite things.",
+        "Try journaling with prompts.",
+        "Write a comic or storyboard.",
+        "Try indoor crafts with recycled materials.",
+        "Make a photo collage.",
+        "Try knitting or crocheting.",
+        "Practice indoor photography with shadows.",
+        "Make homemade candles.",
+        "Write a fantasy or sci-fi story.",
+        "Try indoor meditation with music.",
+        "Make greeting cards.",
+        "Try learning new skills online.",
+        "Write a gratitude journal.",
+        "Try indoor stretching.",
+        "Make your own board game.",
+        "Write a play or script.",
+        "Try new cooking recipes.",
+        "Make homemade soap or lotion.",
+        "Do indoor puzzles or games.",
+        "Write about your dreams.",
+        "Try indoor gardening projects.",
+        "Make a list of things to try.",
+        "Try painting rocks.",
+        "Write a winter or summer poem.",
+        "Try creative writing exercises.",
+        "Make a DIY project.",
+        "Practice mindfulness breathing.",
+        "Try new indoor hobbies.",
+        "Make homemade ice pops.",
+        "Write a motivational letter.",
+        "Try indoor photography.",
+        "Make an outdoor music playlist.",
+        "Write a story about your city.",
+        "Try a new craft technique."
+      ]
+    };
+
+const playBtn = document.getElementById('playBtn');
+    const startBtn = document.getElementById('startBtn');
+    const backHomeBtn = document.getElementById('backHomeBtn');
+    const questForm = document.getElementById('questForm');
+    const questMessage = document.getElementById('questMessage');
+    const homeScreen = document.getElementById('homeScreen');
+
+    playBtn.addEventListener('click', () => {
+      playBtn.style.display = 'none';
+      homeScreen.style.display = 'none';
+      questForm.style.display = 'block';
+      questMessage.style.display = 'none';
+      backHomeBtn.style.display = 'none';
+    });
+
+    backHomeBtn.addEventListener('click', () => {
+      questForm.style.display = 'none';
+      questMessage.style.display = 'none';
+      backHomeBtn.style.display = 'none';
+      homeScreen.style.display = 'block';
+      playBtn.style.display = 'block';
+      document.getElementById('nameInput').value = '';
+      document.getElementById('cityInput').value = '';
+    });
+
+    startBtn.addEventListener('click', async () => {
+      const name = document.getElementById("nameInput").value.trim();
+      const city = document.getElementById("cityInput").value.trim();
+      const apiKey = 'b807d5b307b2bb5a57a4c10a83bd150f';
+
+      if (!name || !city) {
+        alert("Please enter both your name and city!");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`
+        );
+
+        if (!response.ok) {
+          alert("City not found. Please check the city name.");
+          return;
+        }
+
+        const data = await response.json();
+        const weather = data.weather[0].main.toLowerCase();
+
+        let questList, questPrefix;
+
+        if (weather.includes("clear") || weather.includes("sun")) {
+          questList = quests.clear;
+          questPrefix = "The sun is shining! ";
+        } else if (weather.includes("rain")) {
+          questList = quests.rain;
+          questPrefix = "Rain is falling! ";
+        } else if (weather.includes("cloud")) {
+          questList = quests.cloud;
+          questPrefix = "It's a cloudy day. ";
+        } else if (weather.includes("snow")) {
+          questList = quests.snow;
+          questPrefix = "Snowy adventure ahead! ";
+        } else {
+          questList = quests.other;
+          questPrefix = "A unique day awaits! ";
+        }
+
+        const randomQuest = questList[Math.floor(Math.random() * questList.length)];
+
+        questMessage.innerHTML = `<strong>Hi ${name}!</strong> ${questPrefix} Your quest: <em>${randomQuest}</em>`;
+        questForm.style.display = 'none';
+        questMessage.style.display = 'block';
+        backHomeBtn.style.display = 'inline-block';
+
+      } catch (error) {
+        alert("Something went wrong. Please try again later.");
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
